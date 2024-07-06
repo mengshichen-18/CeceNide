@@ -26,9 +26,10 @@ def compute_confidence(logits, token_ids):
     # 计算对数概率
     log_probs = torch.log(token_probs)
     # 归一化处理，取负数的平均值，然后求指数
-    normalized_log_confidence = -log_probs.mean().item()
-    confidence = torch.exp(torch.tensor(normalized_log_confidence)).item()
-    return confidence
+    log_confidence = -log_probs.mean().item()
+#     confidence = torch.exp(torch.tensor(normalized_log_confidence)).item()
+    normalized_confidence = 1 - 0.05*log_confidence / (0.05*log_confidence + 1)
+    return normalized_confidence
 
 def process_question_1(idx, question):
     '''
