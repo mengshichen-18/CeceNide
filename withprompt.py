@@ -88,7 +88,7 @@ def process_question_1(idx, question):
         full_ids = torch.cat((input_ids, output_ids), dim=1)
 
         with torch.no_grad():
-            outputs = model(full_ids)
+            outputs = model(output_ids)
 
         # 提取生成的输出部分的 logits 和 token_ids
         logits = outputs.logits[:, -output_ids.size(1):, :]
