@@ -1,0 +1,7 @@
+题目名称: 基于大模型的数学专家
+接⼝⼈: 张晔晨
+题⽬英⽂名: LLM_math_reasoning
+依赖包:
+- name: sentencepiece
+- name: transformers
+  version: 4.42.3
