@@ -36,7 +36,7 @@ def compute_confidence(logits, token_ids, k=1):
     # 计算平均 logits
     mean_logits = token_logits.mean().item()
     # 使用变种函数进行归一化和调整
-    normalized_confidence = (0.5*mean_logits) / (0.5*mean_logits + 1)
+    # normalized_confidence = (0.5*mean_logits) / (0.5*mean_logits + 1)
     return normalized_confidence
 
 def process_question_1(idx, question):
