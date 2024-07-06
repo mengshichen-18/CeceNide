@@ -18,17 +18,25 @@ tokenizer = AutoTokenizer.from_pretrained(model_path, trust_remote_code=True)
 model = AutoModelForCausalLM.from_pretrained(model_path, torch_dtype=torch.float16, trust_remote_code=True).cuda()
 model = model.eval()
 
-def compute_confidence(logits, token_ids):
-    # 计算 softmax 概率
-    softmax_probs = torch.softmax(logits, dim=-1)
-    # 提取生成标记的概率
-    token_probs = softmax_probs.gather(dim=-1, index=token_ids.unsqueeze(-1)).squeeze(-1)
-    # 计算对数概率
-    log_probs = torch.log(token_probs)
-    # 归一化处理，取负数的平均值，然后求指数
-    log_confidence = -log_probs.mean().item()
-#     confidence = torch.exp(torch.tensor(normalized_log_confidence)).item()
-    normalized_confidence = 1 - 0.05*log_confidence / (0.05*log_confidence + 1)
+# def compute_confidence(logits, token_ids):
+#     # 计算 softmax 概率
+#     softmax_probs = torch.softmax(logits, dim=-1)
+#     # 提取生成标记的概率
+#     token_probs = softmax_probs.gather(dim=-1, index=token_ids.unsqueeze(-1)).squeeze(-1)
+#     # 计算对数概率
+#     log_probs = torch.log(token_probs)
+#     # 归一化处理，取负数的平均值，然后求指数
+#     log_confidence = -log_probs.mean().item()
+# #     confidence = torch.exp(torch.tensor(normalized_log_confidence)).item()
+#     normalized_confidence = 1 - 0.05*log_confidence / (0.05*log_confidence + 1)
+#     return normalized_confidence
+def compute_confidence(logits, token_ids, k=1):
+    # 提取生成标记的 logits
+    token_logits = logits.gather(dim=-1, index=token_ids.unsqueeze(-1)).squeeze(-1)
+    # 计算平均 logits
+    mean_logits = token_logits.mean().item()
+    # 使用变种函数进行归一化和调整
+    normalized_confidence = 1 - (0.5*mean_logits) / (0.5*mean_logits + 1)
     return normalized_confidence
 
 def process_question_1(idx, question):
